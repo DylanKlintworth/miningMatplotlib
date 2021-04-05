@@ -1,5 +1,5 @@
-import github as gh
-import datetime
+
+import datetime, copy, csv, github as gh
 
 
 def get_repo(github):
@@ -63,3 +63,11 @@ def get_issues_over_time(issues, query):
     return time
 
 
+def get_issues_over_time_count(issues_over_time):
+    cp = copy.deepcopy(issues_over_time)
+    cp["day"] = len(cp["day"])
+    cp["week"] = len(cp["week"])
+    cp["month"] = len(cp["month"])
+    cp["year"] = len(cp["year"])
+    cp["five_years"] = len(cp["five_years"])
+    return cp
