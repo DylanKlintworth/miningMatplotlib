@@ -1,6 +1,8 @@
-
-import datetime, copy, csv, github as gh
-
+import datetime
+import copy
+import csv
+import github as gh
+import codecs
 
 def get_repo(github):
     """
@@ -71,3 +73,29 @@ def get_issues_over_time_count(issues_over_time):
     cp["year"] = len(cp["year"])
     cp["five_years"] = len(cp["five_years"])
     return cp
+
+
+def issues_to_csv(issues, path):
+    issues_list = list()
+    for issue in issues:
+        closed = str(issue.closed_at)
+        comment_count = str(issue.comments)
+        created = str(issue.created_at)
+        number = str(issue.number)
+        state = str(issue.state)
+        title = str(issue.title)
+        temp = {
+            "title": title,
+            "number": number,
+            "state": state,
+            "created": created,
+            "closed": closed,
+            "comment_count": comment_count
+        }
+        issues_list.append(temp)
+    with codecs.open(path, mode='w', encoding='utf-8') as csv_file:
+        fieldnames = ["title", "number", "state", "created", "closed", "comment_count"]
+        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+        writer.writeheader()
+        for i in issues_list:
+            writer.writerow(i)
