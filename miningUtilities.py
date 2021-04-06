@@ -24,7 +24,7 @@ def main():
     Runs the main functions 
     '''
     start  = datetime.datetime.now()
-    g      = Github("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")
+    g      = Github("token")
     repo   = get_repo(g)
 
     # WORKING WITH ISSUES
@@ -71,10 +71,19 @@ def get_all_commits(repo):
     return commits
 
 def commit_iterator(commits):
+    """
+    Sends information obtained from API to a xlsx file 
 
-    all_committs = pd.DataFrame()
+        Parameters:
+            commits (PaginatedList of commits): the repositories' issues
+        Returns:
+            None, instead, prints out xlsx
 
-    for c in commits[:1000]:
+    """
+    
+    all_commits = pd.DataFrame()
+
+    for c in commits[1000:2000]:
         sha = c.sha 
         status = c.stats 
         files = c.files 
@@ -106,19 +115,19 @@ def commit_iterator(commits):
         # Making a one row dataframe of the current issue's information 
         temp_df = pd.DataFrame(temp, index=[0])
         # adding the current issue to all issues dataframe 
-        all_committs = all_committs.append(temp_df, ignore_index=True, sort=False)
+        all_commits = all_commits.append(temp_df, ignore_index=True, sort=False)
     
-    all_committs.to_excel("matplotlib_committs_information_1000.xlsx", index=False)  
+    all_commits.to_excel("matplotlib_commits_information_2000.xlsx", index=False)  
 
 
 def get_issues_over_time(issues):
     """
-    Sends information obtained from API to a CSV file 
+    Sends information obtained from API to a xlsx file 
 
         Parameters:
             issues (PaginatedList of Issues): the repositories' issues
         Returns:
-            None, instead, prints out csv 
+            None, instead, prints out xlsx
 
     """
     # time = {
