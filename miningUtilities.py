@@ -110,34 +110,42 @@ def get_all_commits(repo):
 def commits_to_csv(commits, path, file_exists):
     commits_list = list()
     for commit in commits:
+        sha = commit.sha
+        commit_info = commit.commit
         if commit.author:
             author = str(commit.author.login)
         else:
             author = "None"
-        date = str(commit.commit.author.date)
+        date = str(commit_info.author.date)
+        file_count = str(len(commit.files))
+        message = commit_info.message
         total = str(commit.stats.total)
+        tree_tree = commit_info.tree.tree
+        total_size = 0
+        for item in tree_tree:
+            size = item.size if item.size is not None else 0
+            total_size += size
         temp = {
+            "sha": sha,
             "author": author,
             "date": date,
-            "total": total
+            "message": message,
+            "total": total,
+            "file_count": file_count,
+            "total_size": total_size
         }
         commits_list.append(temp)
     with codecs.open(path, mode='a+', encoding='utf-8') as csv_file:
-        fieldnames = ["author", "date", "total"]
+        fieldnames = ["sha", "author", "date", "message", "total", "file_count", "total_size"]
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
         if not file_exists:
             writer.writeheader()
-        for i in commits_list:
-            writer.writerow(i)
+        for index in commits_list:
+            writer.writerow(index)
 
 
 if __name__ == "__main__":
     g = github.Github()
     repo = get_repo(g)
     commits = get_all_commits(repo)
-    for i in range(75):
-        page = commits.get_page(i)
-        if i == 0:
-            commits_to_csv(page, "commits.csv", False)
-        else:
-            commits_to_csv(page, "commits.csv", True)
+
