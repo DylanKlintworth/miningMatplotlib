@@ -3,8 +3,6 @@ import datetime, copy, csv
 from github import Github # pip install PyGithub
 import pandas as pd # pip install pandas 
 
-
-
 '''
 GETTING STARTED WITH PYGITHUB 
 
@@ -26,10 +24,18 @@ def main():
     Runs the main functions 
     '''
     start  = datetime.datetime.now()
-    g      = Github("token")
+    g      = Github("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")
     repo   = get_repo(g)
-    issues = get_all_issues(repo)
-    get_issues_over_time(issues) 
+
+    # WORKING WITH ISSUES
+    # issues = get_all_issues(repo)
+    # get_issues_over_time(issues) 
+
+    # WORKING WITH COMMITS 
+    commits = get_all_commits(repo)
+    commit_iterator(commits)
+
+
     end    = datetime.datetime.now()
     print(f"Completed in: {end-start}")
         
@@ -53,6 +59,57 @@ def get_all_issues(repo):
     """
     issues = repo.get_issues(state="all", sort="created")
     return issues
+
+def get_all_commits(repo):
+    """
+    Returns a PaginatedList of Issue objects (open/closed) sorted by when they were created
+
+        Parameters:
+                repo (github.Repository): The repository selected to get the issues of
+    """
+    commits = repo.get_commits()
+    return commits
+
+def commit_iterator(commits):
+
+    all_committs = pd.DataFrame()
+
+    for c in commits[:1000]:
+        sha = c.sha 
+        status = c.stats 
+        files = c.files 
+        len_files = len(files)
+        commit_info = c.commit 
+        date = commit_info.author.date
+        author = commit_info.author.name 
+        message = commit_info.message
+        parents = commit_info.parents # list 
+        tree_url = commit_info.tree.url 
+
+        tree_tree = commit_info.tree.tree
+        total_size = 0
+        for item in tree_tree:
+            path = item.path 
+            size = item.size if item.size != None else 0
+            total_size += size 
+
+        temp = {
+            "Sha": sha, 
+            "Status": status,
+            "Number of Files": len_files, 
+            "Date": date, 
+            "Author": author, 
+            "Message": message,
+            "Tree URL" : tree_url, 
+            "Total Size" : total_size
+        }
+        # Making a one row dataframe of the current issue's information 
+        temp_df = pd.DataFrame(temp, index=[0])
+        # adding the current issue to all issues dataframe 
+        all_committs = all_committs.append(temp_df, ignore_index=True, sort=False)
+    
+    all_committs.to_excel("matplotlib_committs_information_1000.xlsx", index=False)  
+
 
 def get_issues_over_time(issues):
     """
@@ -80,7 +137,7 @@ def get_issues_over_time(issues):
     issue_columns = ["Issue ID", "Title", "Body", "User", "State","Created At", "Assignees", "Closed At", "Closed By", "Updated At", "Number of Comments", "Labels", "Milestone Title", "Milestone Number"]
     all_issues = pd.DataFrame()
 
-    for issue in issues[:500]: #only get the first one hundred open issues 
+    for issue in issues[:3000]: #only get the first one hundred open issues 
         # getting information from API
         issue_id = issue.id # int 
         title = issue.title # str
@@ -127,8 +184,8 @@ def get_issues_over_time(issues):
         #     time["five_years"].append(issue)
 
         # sending information to CSV file
-    all_issues.to_csv("matplotlib_issues_information.csv", index=False)    
-    print("--- Printed to CSV file ---")
+    all_issues.to_excel("matplotlib_issues_information_v3000.xlsx", index=False)    
+    print("--- Printed to Excel file ---")
 
 
 # def get_issues_over_time_count(issues_over_time):
