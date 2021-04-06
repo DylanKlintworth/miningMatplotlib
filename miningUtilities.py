@@ -1,17 +1,18 @@
 import datetime
 import copy
 import csv
-import github as gh
+import github
 import codecs
 
-def get_repo(github):
+
+def get_repo(gh):
     """
     Returns the Repository object representation of the matplotlib repository
 
         Parameters:
-            github (github.Github): The main GitHub object representation
+            gh (github.Github): The main GitHub object representation
     """
-    repo = github.get_repo("matplotlib/matplotlib")
+    repo = gh.get_repo("matplotlib/matplotlib")
     return repo
 
 
@@ -98,4 +99,30 @@ def issues_to_csv(issues, path):
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
         writer.writeheader()
         for i in issues_list:
+            writer.writerow(i)
+
+
+def get_all_commits(repo):
+    commits = repo.get_commits()
+    return commits
+
+
+def commits_to_csv(commits, path, fileExists):
+    commits_list = list()
+    for commit in commits:
+        author = str(commit.author)
+        committer = str(commit.committer)
+        total = str(commit.stats.deletions)
+        temp = {
+            "author": author,
+            "committer": committer,
+            "total": total
+        }
+        commits_list.append(temp)
+    with codecs.open(path, mode='a+', encoding='utf-8') as csv_file:
+        fieldnames = ["author", "committer", "additions", "deletions", "total"]
+        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+        if not fileExists:
+            writer.writeheader()
+        for i in commits_list:
             writer.writerow(i)
