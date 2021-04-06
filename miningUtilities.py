@@ -94,7 +94,6 @@ def issues_to_csv(issues, path):
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
         writer.writeheader()
         for i in issues_list:
-<<<<<<< HEAD
             writer.writerow(i)
 
 
@@ -141,10 +140,6 @@ def commits_to_csv(commits, path, file_exists):
 
 
 if __name__ == "__main__":
-    g = github.Github()
+    g = gh.Github()
     repo = get_repo(g)
     commits = get_all_commits(repo)
-
-=======
-            writer.writerow(i)
->>>>>>> 1fde134ad440fc885fee0536501c33577ee9329a

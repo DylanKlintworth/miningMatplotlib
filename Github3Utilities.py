@@ -23,7 +23,9 @@ def commits_to_csv(commits_list, path, file_exists):
         sha = str(commit.sha)
         message = str(commit.commit.message)
         url = str(commit.url)
-        date = str(commit.commit.committer.get('date'))
+        time = str(commit.commit.committer.get('date'))
+        date = datetime.datetime.strptime(time, "%Y-%m-%dT%H:%M:%SZ")
+        date = date.strftime("%m/%d/%Y %I:%M:%S %p")
         if commit.author:
             author = str(commit.author.login)
         else:
@@ -46,6 +48,6 @@ def commits_to_csv(commits_list, path, file_exists):
 
 
 if __name__ == "__main__":
-    gh = github3.login() # enter uname/passwd as arguments
+    gh = github3.login()  # enter uname/passwd as arguments
     repo = get_repo(gh)
     commits = get_all_commits(repo)
