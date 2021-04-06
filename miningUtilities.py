@@ -1,21 +1,17 @@
 
 import datetime, copy, csv
-from github import Github
-import pandas as pd
+from github import Github # pip install PyGithub
+import pandas as pd # pip install pandas 
+
 
 
 '''
 GETTING STARTED WITH PYGITHUB 
 
-pip install PyGithub
-
 from github import Github
-
 # First create a Github instance:
-
 # using an access token
 g = Github("access_token")
-
 # Then play with your Github objects:
 repo = g.get_repo("matplotlib/matplotlib"):
 '''
@@ -81,7 +77,7 @@ def get_issues_over_time(issues):
     issue_columns = ["Issue ID", "Title", "Body", "User", "State","Created At", "Assignees", "Closed At", "Closed By", "Updated At", "Number of Comments", "Labels", "Milestone Title", "Milestone Number"]
     all_issues = pd.DataFrame()
 
-    for issue in issues[:500]: #only get the first one hundred open issues 
+    for issue in issues: #only get the first one hundred open issues 
         # getting information from API
         issue_id = issue.id # int 
         title = issue.title # str
