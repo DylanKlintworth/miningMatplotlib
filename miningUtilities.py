@@ -94,4 +94,57 @@ def issues_to_csv(issues, path):
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
         writer.writeheader()
         for i in issues_list:
+<<<<<<< HEAD
             writer.writerow(i)
+
+
+def get_all_commits(repo):
+    commits = repo.get_commits()
+    return commits
+
+
+def commits_to_csv(commits, path, file_exists):
+    commits_list = list()
+    for commit in commits:
+        sha = commit.sha
+        commit_info = commit.commit
+        if commit.author:
+            author = str(commit.author.login)
+        else:
+            author = "None"
+        date = str(commit_info.author.date)
+        file_count = str(len(commit.files))
+        message = commit_info.message
+        total = str(commit.stats.total)
+        tree_tree = commit_info.tree.tree
+        total_size = 0
+        for item in tree_tree:
+            size = item.size if item.size is not None else 0
+            total_size += size
+        temp = {
+            "sha": sha,
+            "author": author,
+            "date": date,
+            "message": message,
+            "total": total,
+            "file_count": file_count,
+            "total_size": total_size
+        }
+        commits_list.append(temp)
+    with codecs.open(path, mode='a+', encoding='utf-8') as csv_file:
+        fieldnames = ["sha", "author", "date", "message", "total", "file_count", "total_size"]
+        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+        if not file_exists:
+            writer.writeheader()
+        for index in commits_list:
+            writer.writerow(index)
+
+
+if __name__ == "__main__":
+    g = github.Github()
+    repo = get_repo(g)
+    commits = get_all_commits(repo)
+
+=======
+            writer.writerow(i)
+>>>>>>> 1fde134ad440fc885fee0536501c33577ee9329a
