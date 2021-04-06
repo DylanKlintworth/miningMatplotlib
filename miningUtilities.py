@@ -1,25 +1,22 @@
 import datetime
 import copy
 import csv
-import github
+import github as gh
 import codecs
 
-
-def get_repo(gh):
+def get_repo(github):
     """
     Returns the Repository object representation of the matplotlib repository
-
         Parameters:
-            gh (github.Github): The main GitHub object representation
+            github (github.Github): The main GitHub object representation
     """
-    repo = gh.get_repo("matplotlib/matplotlib")
+    repo = github.get_repo("matplotlib/matplotlib")
     return repo
 
 
 def get_all_issues(repo):
     """
     Returns a PaginatedList of Issue objects (open/closed) sorted by when they were created
-
         Parameters:
                 repo (github.Repository): The repository selected to get the issues of
     """
@@ -31,11 +28,9 @@ def get_issues_over_time(issues, query):
     """
     Return a dictionary in which each key represents a timeframe (day, week, month, year, 5 years)
     and holds the value of a list of issues that have been created within that timeframe
-
         Parameters:
                 issues (PaginatedList of Issues): the repositories' issues
                 query (str): The state to be queries e.g "open"/"closed"
-
     """
     time = {
         "day": list(),
@@ -99,6 +94,7 @@ def issues_to_csv(issues, path):
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
         writer.writeheader()
         for i in issues_list:
+<<<<<<< HEAD
             writer.writerow(i)
 
 
@@ -149,3 +145,6 @@ if __name__ == "__main__":
     repo = get_repo(g)
     commits = get_all_commits(repo)
 
+=======
+            writer.writerow(i)
+>>>>>>> 1fde134ad440fc885fee0536501c33577ee9329a
