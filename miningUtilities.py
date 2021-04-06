@@ -2,6 +2,8 @@
 import datetime, copy, csv
 from github import Github # pip install PyGithub
 import pandas as pd # pip install pandas 
+# don't need to import openpyxl, but need to install it to use to_excel pandas function 
+# pip install openpyxl
 
 '''
 GETTING STARTED WITH PYGITHUB 
@@ -10,7 +12,7 @@ from github import Github
 # First create a Github instance using an access token: 
 g = Github("access_token")
 # Then play with your Github objects:
-repo = g.get_repo("matplotlib/matplotlib"):
+repo = g.get_repo("matplotlib/matplotlib")
 
 WHEN CREATING PERSONAL ACCESS TOKEN
 Go to github.com/settings/tokens
