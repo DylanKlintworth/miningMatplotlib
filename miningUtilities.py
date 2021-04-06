@@ -80,7 +80,7 @@ def get_issues_over_time(issues):
     issue_columns = ["Issue ID", "Title", "Body", "User", "State","Created At", "Assignees", "Closed At", "Closed By", "Updated At", "Number of Comments", "Labels", "Milestone Title", "Milestone Number"]
     all_issues = pd.DataFrame()
 
-    for issue in issues: #only get the first one hundred open issues 
+    for issue in issues[:500]: #only get the first one hundred open issues 
         # getting information from API
         issue_id = issue.id # int 
         title = issue.title # str
@@ -88,10 +88,8 @@ def get_issues_over_time(issues):
         user = issue.user.login 
         state = issue.state 
         created_at = issue.created_at # datetime.datetime
-        assignees = [] # list 
-        for assignee in issue.assignees:
-            assignees.append(assignee.login)
-        assignees = ", ".join(assignees)
+        assignees = issue.assignees # list
+        assignees = len(assignees) # get only length of list 
         closed_at = issue.closed_at # datetime.datetime
         closed_by = issue.closed_by # NamedUser or None 
         if closed_by != None:
@@ -152,7 +150,7 @@ def make_issue_dict(issue_id, title, body, user, state, created_at, assignees, c
         "User": str,
         "State": str,
         "Created At": datetime.datetime, 
-        "Assignees": str, 
+        "Assignees": int, 
         "Closed At": datetime.datetime, 
         "Closed By": str, or None 
         "Updated At": datetime.datetime, 
