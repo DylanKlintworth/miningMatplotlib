@@ -107,22 +107,37 @@ def get_all_commits(repo):
     return commits
 
 
-def commits_to_csv(commits, path, fileExists):
+def commits_to_csv(commits, path, file_exists):
     commits_list = list()
     for commit in commits:
-        author = str(commit.author)
-        committer = str(commit.committer)
-        total = str(commit.stats.deletions)
+        if commit.author:
+            author = str(commit.author.login)
+        else:
+            author = "None"
+        date = str(commit.commit.author.date)
+        total = str(commit.stats.total)
         temp = {
             "author": author,
-            "committer": committer,
+            "date": date,
             "total": total
         }
         commits_list.append(temp)
     with codecs.open(path, mode='a+', encoding='utf-8') as csv_file:
-        fieldnames = ["author", "committer", "additions", "deletions", "total"]
+        fieldnames = ["author", "date", "total"]
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
-        if not fileExists:
+        if not file_exists:
             writer.writeheader()
         for i in commits_list:
             writer.writerow(i)
+
+
+if __name__ == "__main__":
+    g = github.Github()
+    repo = get_repo(g)
+    commits = get_all_commits(repo)
+    for i in range(75):
+        page = commits.get_page(i)
+        if i == 0:
+            commits_to_csv(page, "commits.csv", False)
+        else:
+            commits_to_csv(page, "commits.csv", True)
