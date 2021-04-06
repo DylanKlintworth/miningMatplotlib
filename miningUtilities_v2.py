@@ -26,7 +26,7 @@ def main():
     Runs the main functions 
     '''
     start  = datetime.datetime.now()
-    g      = Github("token")
+    g      = Github("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")
     repo   = get_repo(g)
 
     # WORKING WITH ISSUES, uncomment to run
@@ -85,7 +85,7 @@ def commit_iterator(commits):
     
     all_commits = pd.DataFrame()
 
-    for c in commits[1000:2000]:
+    for c in commits[2000:3000]:
         sha = c.sha 
         status = c.stats 
         files = c.files 
