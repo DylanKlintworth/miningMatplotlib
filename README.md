@@ -1,5 +1,8 @@
 # miningMatplotlib
-
+## FILE LOCATIONS
+###### All files types are located in the directory associated with their extension
+###### Charts are located within Tableau workbooks and Excel workbooks
+###### csv data includes that for commits and issues
 ## DEPENDENCIES 
 ###### pip install openpyxl
 ###### pip install pandas
