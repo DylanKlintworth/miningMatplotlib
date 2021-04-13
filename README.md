@@ -3,6 +3,7 @@
 ###### All files types are located in the directory associated with their extension
 ###### Charts are located within Tableau workbooks and Excel workbooks
 ###### csv data includes that for commits and issues
+###### The presentation included in the root directory includes all charts and findings, including answers to research questions and general insights
 ## DEPENDENCIES 
 ###### pip install openpyxl
 ###### pip install pandas
