@@ -1,6 +1,6 @@
 # miningMatplotlib
 
-## requirements 
+## DEPENDENCIES 
 ###### pip install openpyxl
 ###### pip install pandas
 ###### pip install PyGithub
