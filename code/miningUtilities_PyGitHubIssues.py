@@ -26,20 +26,20 @@ def main():
     Runs the main functions 
     '''
     start  = datetime.datetime.now()
-    g      = Github("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")
+    g      = Github("token")
     repo   = get_repo(g)
 
     # WORKING WITH ISSUES, uncomment to run
     # warning: will use up API calls if you want to run both commits and issues at the same time 
-    # issues = get_all_issues(repo)
-    # get_issues_over_time(issues) 
+    issues = get_all_issues(repo)
+    get_issues_over_time(issues) 
 
-    # WORKING WITH COMMITS 
-    commits = get_all_commits(repo)
-    commit_iterator(commits)
+    # # WORKING WITH COMMITS 
+    # commits = get_all_commits(repo)
+    # commit_iterator(commits)
 
-    end    = datetime.datetime.now()
-    print(f"Completed in: {end-start}")
+    # end    = datetime.datetime.now()
+    # print(f"Completed in: {end-start}")
         
 def get_repo(tokenized_github):
     """
@@ -48,7 +48,7 @@ def get_repo(tokenized_github):
         Parameters:
             github (github.Github): The main GitHub object representation
     """
-    repo = tokenized_github.get_repo("matplotlib/matplotlib")
+    repo = tokenized_github.get_repo("PyGithub/PyGithub")
     return repo
 
 
@@ -85,7 +85,7 @@ def commit_iterator(commits):
     
     all_commits = pd.DataFrame()
 
-    for c in commits[2000:3000]:
+    for c in commits:
         sha = c.sha 
         status = c.stats 
         files = c.files 
@@ -119,7 +119,7 @@ def commit_iterator(commits):
         # adding the current issue to all issues dataframe 
         all_commits = all_commits.append(temp_df, ignore_index=True, sort=False)
     
-    all_commits.to_excel("matplotlib_commits_information_2000.xlsx", index=False)  
+    all_commits.to_excel("pyhithub_commits.xlsx", index=False)  
 
 
 def get_issues_over_time(issues):
@@ -133,10 +133,10 @@ def get_issues_over_time(issues):
 
     """
 
-    issue_columns = ["Issue ID", "Title", "Body", "User", "State","Created At", "Assignees", "Closed At", "Closed By", "Updated At", "Number of Comments", "Labels", "Milestone Title", "Milestone Number"]
+    issue_columns = ["Issue ID", "Title", "Body", "User", "State","Created At", "Assignees", "Closed At", "Number of Comments"]
     all_issues = pd.DataFrame()
 
-    for issue in issues[:3000]: #only get the first one hundred open issues 
+    for issue in issues: #only get the first one hundred open issues 
         # getting information from API
         issue_id = issue.id # int 
         title = issue.title # str
@@ -147,24 +147,24 @@ def get_issues_over_time(issues):
         assignees = issue.assignees # list
         assignees = len(assignees) # get only length of list 
         closed_at = issue.closed_at # datetime.datetime
-        closed_by = issue.closed_by # NamedUser or None 
-        if closed_by != None:
-            closed_by = issue.closed_by.login # NamedUser
-        updated_at = issue.updated_at # datetime.datetime
+        # closed_by = issue.closed_by # NamedUser or None 
+        # if closed_by != None:
+        #     closed_by = issue.closed_by.login # NamedUser
+        # updated_at = issue.updated_at # datetime.datetime
         no_of_comments = issue.comments # int 
-        new_label_format = []
-        for label in issue.labels: # check to see if any labels exist 
-            new_label_format.append(label.name)
-        labels = ", ".join(new_label_format)
+        # new_label_format = []
+        # for label in issue.labels: # check to see if any labels exist 
+        #     new_label_format.append(label.name)
+        # labels = ", ".join(new_label_format)
         
-        if issue.milestone != None:
-            milestone_title = issue.milestone.title # string
-            milestone_number = issue.milestone.number # int or None
-        else: 
-            milestone_title = "" # string
-            milestone_number = None # int or None
+        # if issue.milestone != None:
+        #     milestone_title = issue.milestone.title # string
+        #     milestone_number = issue.milestone.number # int or None
+        # else: 
+        #     milestone_title = "" # string
+        #     milestone_number = None # int or None
         # Making a dict from the information
-        temp_dict = make_issue_dict(issue_id, title, body, user, state, created_at, assignees, closed_at, closed_by, updated_at, no_of_comments, labels, milestone_title, milestone_number)
+        temp_dict = make_issue_dict(issue_id, title, body, user, state, created_at, assignees, closed_at, no_of_comments)
         # Making a one row dataframe of the current issue's information 
         temp_df = pd.DataFrame(temp_dict, columns=issue_columns, index=[0])
         # adding the current issue to all issues dataframe 
@@ -172,11 +172,11 @@ def get_issues_over_time(issues):
 
 
         # sending information to CSV file
-    all_issues.to_excel("matplotlib_issues_information_v3000.xlsx", index=False)    
+    all_issues.to_excel("pyhithub_issues.xlsx", index=False)    
     print("--- Printed to Excel file ---")
 
 
-def make_issue_dict(issue_id, title, body, user, state, created_at, assignees, closed_at, closed_by, updated_at, no_of_comments, labels, milestone_title, milestone_number):
+def make_issue_dict(issue_id, title, body, user, state, created_at, assignees, closed_at, no_of_comments):
     '''
     Create dictionary of values obtained from API 
     Params:
@@ -206,12 +206,7 @@ def make_issue_dict(issue_id, title, body, user, state, created_at, assignees, c
         "Created At": created_at, 
         "Assignees": assignees, 
         "Closed At": closed_at, 
-        "Closed By": closed_by, 
-        "Updated At": updated_at, 
-        "Number of Comments": no_of_comments, 
-        "Labels": labels, 
-        "Milestone Title": milestone_title, 
-        "Milestone Number": milestone_number
+        "Number of Comments": no_of_comments
     }
 
 # invoke main 
