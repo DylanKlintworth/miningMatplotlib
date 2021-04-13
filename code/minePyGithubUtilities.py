@@ -5,7 +5,7 @@ import github3
 
 
 def get_repo(gh):
-    repo = gh.repository('plotly', 'plotly.py')
+    repo = gh.repository('PyGithub', 'PyGithub')
     return repo
 
 
