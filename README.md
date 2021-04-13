@@ -1,4 +1,6 @@
 # miningMatplotlib
+## GROUP MEMBERS
+##### Dylan Klintworth, Stephanie Rodriguez, Matt Wozniak, Alberto Cattaneo, Alvin Alic
 ## FILE LOCATIONS
 ###### All files types are located in the directory associated with their extension
 ###### Charts are located within Tableau workbooks and Excel workbooks
