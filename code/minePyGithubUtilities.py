@@ -30,7 +30,7 @@ def commits_to_csv(commits_list, path, file_exists, gh):
         print(gh.rate_limit().get('resources').get('core').get('remaining'))
         code_size = 0
         source_files = 0
-        extensions = [".css", ".cpp", ".c", ".html", ".h", ".js", ".m"] #change these to whatever languages plotly uses
+        extensions = [".py", ".sh"] #change these to whatever languages plotly uses
         ''' if there is a file extension that is one letter, make sure it occurs after any other extensions that start 
          with the same letter e.g ["cpp", "c"] otherwise the code size calc will be messed up'''
         for t in tree:
