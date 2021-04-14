@@ -4,8 +4,8 @@ import datetime
 import github3
 
 
-def get_repo(gh):
-    repo = gh.repository('matplotlib', 'matplotlib')
+def get_repo(gh, owner, repository):
+    repo = gh.repository(owner, repository)
     return repo
 
 
@@ -15,6 +15,30 @@ def get_all_commits(repo):
     for commit in commits:
         commits_list.append(commit)
     return commits_list
+
+
+def get_code_size(commits_list, extensions):
+    for commit in commits_list:
+        tree = commit.commit.tree.to_tree().recurse().as_dict().get('tree')
+        code_size = 0
+        source_files = 0
+        for t in tree:
+            filen = t.get("path")
+            has_extension = False
+            if not t.get("type") == "blob":
+                continue
+            for extension in extensions:
+                if extension in filen:
+                    has_extension = True
+                    break
+            if not has_extension:
+                continue
+            size = str(t.get("size"))
+            if not size == "None":
+                print(f"Path: {filen}, Size: {size}")
+                code_size += int(size)
+                source_files += 1
+        return code_size, source_files
 
 
 def commits_to_csv(commits_list, path, file_exists, gh):
@@ -67,3 +91,16 @@ def commits_to_csv(commits_list, path, file_exists, gh):
             writer.writeheader()
         for index in dict_list:
             writer.writerow(index)
+
+
+def main():
+    gh = github3.login()
+    repo = get_repo(gh)
+    commits = get_all_commits(repo)
+    code_size, source_files = get_code_size(commits, [])
+    print(
+        f"Total Code Size: {code_size}, # Source Files {source_files}, Bytes per source file: {code_size / source_files}")
+
+
+if __name__ == "__main__":
+    main()
